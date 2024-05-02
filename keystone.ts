@@ -15,19 +15,35 @@ import { lists } from "./schema";
 import { withAuth, session } from "./auth";
 import "dotenv/config";
 
+const {
+  S3_BUCKET_NAME: bucketName,
+  S3_REGION: region,
+  S3_ACCESS_KEY_ID: accessKeyId,
+  S3_SECRET_ACCESS_KEY: secretAccessKey,
+} = process.env;
+
 export default withAuth(
   config({
+    server: {
+      cors: { origin: ["http://localhost:8080"], credentials: true },
+    },
     db: {
       provider: "postgresql",
       url: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ep-billowing-star-a584btzx.us-east-2.aws.neon.tech/delicious-vicious-dev?sslmode=require`,
     },
-    graphql: {
-      playground: true,
-      apolloConfig: {
-        introspection: true,
-      },
-    },
     lists,
     session,
+    storage: {
+      delicious_vicious_bucket: {
+        kind: "s3",
+        type: "image",
+        bucketName: bucketName ? bucketName : "dev-bucket",
+        region: region ? region : "global",
+        accessKeyId,
+        secretAccessKey,
+        // The S3 links will be signed so they remain private
+        signed: { expiry: 5000 },
+      },
+    },
   })
 );

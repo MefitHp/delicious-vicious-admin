@@ -29,7 +29,6 @@ var import_core2 = require("@keystone-6/core");
 var import_core = require("@keystone-6/core");
 var import_access = require("@keystone-6/core/access");
 var import_fields = require("@keystone-6/core/fields");
-var import_fields_document = require("@keystone-6/fields-document");
 var lists = {
   User: (0, import_core.list)({
     // WARNING
@@ -49,88 +48,151 @@ var lists = {
         isIndexed: "unique"
       }),
       password: (0, import_fields.password)({ validation: { isRequired: true } }),
-      // we can use this field to see what Posts this User has authored
-      //   more on that in the Post list below
-      posts: (0, import_fields.relationship)({ ref: "Post.author", many: true }),
       createdAt: (0, import_fields.timestamp)({
         // this sets the timestamp to Date.now() when the user is first created
         defaultValue: { kind: "now" }
       })
     }
   }),
-  Post: (0, import_core.list)({
+  Producto: (0, import_core.list)({
     // WARNING
     //   for this starter project, anyone can create, query, update and delete anything
     //   if you want to prevent random people on the internet from accessing your data,
     //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
     access: import_access.allowAll,
-    // this is the fields for our Post list
+    // this is the fields for our Producto list
     fields: {
-      title: (0, import_fields.text)({ validation: { isRequired: true } }),
+      nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
       // the document field can be used for making rich editable content
       //   you can find out more at https://keystonejs.com/docs/guides/document-fields
-      content: (0, import_fields_document.document)({
-        formatting: true,
-        layouts: [
-          [1, 1],
-          [1, 1, 1],
-          [2, 1],
-          [1, 2],
-          [1, 2, 1]
-        ],
-        links: true,
-        dividers: true
+      descripcion: (0, import_fields.text)({ validation: { isRequired: true } }),
+      precio: (0, import_fields.integer)({
+        validation: { isRequired: true }
       }),
-      // with this field, you can set a User as the author for a Post
-      author: (0, import_fields.relationship)({
-        // we could have used 'User', but then the relationship would only be 1-way
-        ref: "User.posts",
-        // this is some customisations for changing how this will look in the AdminUI
+      es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
+      imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
+      categoria: (0, import_fields.relationship)({
+        ref: "Categoria.productos",
         ui: {
-          displayMode: "cards",
-          cardFields: ["name", "email"],
-          inlineEdit: { fields: ["name", "email"] },
-          linkToItem: true,
-          inlineConnect: true
-        },
-        // a Post can only have one author
-        //   this is the default, but we show it here for verbosity
-        many: false
-      }),
-      // with this field, you can add some Tags to Posts
-      tags: (0, import_fields.relationship)({
-        // we could have used 'Tag', but then the relationship would only be 1-way
-        ref: "Tag.posts",
-        // a Post can have many Tags, not just one
-        many: true,
-        // this is some customisations for changing how this will look in the AdminUI
-        ui: {
-          displayMode: "cards",
-          cardFields: ["name"],
-          inlineEdit: { fields: ["name"] },
-          linkToItem: true,
-          inlineConnect: true,
-          inlineCreate: { fields: ["name"] }
+          displayMode: "select",
+          labelField: "nombre"
         }
       })
     }
   }),
-  // this last list is our Tag list, it only has a name field for now
-  Tag: (0, import_core.list)({
-    // WARNING
-    //   for this starter project, anyone can create, query, update and delete anything
-    //   if you want to prevent random people on the internet from accessing your data,
-    //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
+  Categoria: (0, import_core.list)({
     access: import_access.allowAll,
-    // setting this to isHidden for the user interface prevents this list being visible in the Admin UI
-    ui: {
-      isHidden: true
-    },
-    // this is the fields for our Tag list
     fields: {
-      name: (0, import_fields.text)(),
-      // this can be helpful to find out all the Posts associated with a Tag
-      posts: (0, import_fields.relationship)({ ref: "Post.tags", many: true })
+      nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
+      productos: (0, import_fields.relationship)({
+        ref: "Producto.categoria",
+        many: true,
+        ui: {
+          labelField: "nombre"
+        }
+      })
+    }
+  }),
+  Portada: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
+      es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
+      imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" })
+    }
+  }),
+  Box: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
+      size: (0, import_fields.integer)(),
+      es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
+      imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
+      orders: (0, import_fields.relationship)({
+        ref: "Order.box",
+        // Reference the 'box' field in the Order list
+        many: true,
+        // Box can have many orders
+        ui: {
+          displayMode: "count"
+        }
+      })
+    }
+  }),
+  Order: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      nombre: (0, import_fields.text)({
+        validation: { isRequired: true }
+      }),
+      email: (0, import_fields.text)({
+        validation: { isRequired: true }
+      }),
+      telefono: (0, import_fields.text)({
+        validation: { isRequired: true }
+      }),
+      referencia: (0, import_fields.text)(),
+      direccion: (0, import_fields.text)(),
+      google_maps_link: (0, import_fields.text)(),
+      dia_entrega: (0, import_fields.text)(),
+      hora_entrega: (0, import_fields.text)(),
+      tipo_entrega: (0, import_fields.text)({
+        validation: { isRequired: true }
+      }),
+      productos: (0, import_fields.text)({
+        validation: { isRequired: true },
+        ui: {
+          displayMode: "textarea"
+        }
+      }),
+      total_orden: (0, import_fields.integer)({
+        validation: { isRequired: true }
+      }),
+      status: (0, import_fields.select)({
+        defaultValue: "created",
+        options: [
+          {
+            label: "Orden creada",
+            value: "created"
+          },
+          {
+            label: "Orden Pagada",
+            value: "paid"
+          },
+          {
+            label: "Orden Finalizada",
+            value: "finished"
+          }
+        ]
+      }),
+      box: (0, import_fields.relationship)({
+        ref: "Box.orders",
+        // Reference the 'orders' field in the Box list
+        label: "Tama\xF1o de la caja",
+        ui: {
+          displayMode: "select",
+          labelField: "size"
+        }
+      })
+    }
+  }),
+  Stock: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      actualizado_en: (0, import_fields.timestamp)({
+        defaultValue: { kind: "now" },
+        validation: { isRequired: true }
+      }),
+      valido_desde: (0, import_fields.timestamp)({
+        isIndexed: "unique",
+        validation: { isRequired: true }
+      }),
+      valido_hasta: (0, import_fields.timestamp)({
+        isIndexed: "unique",
+        validation: { isRequired: true }
+      }),
+      es_valido: (0, import_fields.checkbox)({ defaultValue: true }),
+      productos: (0, import_fields.json)()
     }
   })
 };
@@ -170,20 +232,35 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var import_config = require("dotenv/config");
+var {
+  S3_BUCKET_NAME: bucketName,
+  S3_REGION: region,
+  S3_ACCESS_KEY_ID: accessKeyId,
+  S3_SECRET_ACCESS_KEY: secretAccessKey
+} = process.env;
 var keystone_default = withAuth(
   (0, import_core2.config)({
+    server: {
+      cors: { origin: ["http://localhost:8080"], credentials: true }
+    },
     db: {
       provider: "postgresql",
       url: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ep-billowing-star-a584btzx.us-east-2.aws.neon.tech/delicious-vicious-dev?sslmode=require`
     },
-    graphql: {
-      playground: true,
-      apolloConfig: {
-        introspection: true
-      }
-    },
     lists,
-    session
+    session,
+    storage: {
+      delicious_vicious_bucket: {
+        kind: "s3",
+        type: "image",
+        bucketName: bucketName ? bucketName : "dev-bucket",
+        region: region ? region : "global",
+        accessKeyId,
+        secretAccessKey,
+        // The S3 links will be signed so they remain private
+        signed: { expiry: 5e3 }
+      }
+    }
   })
 );
 //# sourceMappingURL=config.js.map

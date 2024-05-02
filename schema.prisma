@@ -16,23 +16,81 @@ model User {
   name      String    @default("")
   email     String    @unique @default("")
   password  String
-  posts     Post[]    @relation("Post_author")
   createdAt DateTime? @default(now())
 }
 
-model Post {
-  id       String  @id @default(cuid())
-  title    String  @default("")
-  content  Json    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  author   User?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId String? @map("author")
-  tags     Tag[]   @relation("Post_tags")
+model Producto {
+  id               String     @id @default(cuid())
+  nombre           String     @default("")
+  descripcion      String     @default("")
+  precio           Int
+  es_visible       Boolean    @default(true)
+  imagen_id        String?
+  imagen_filesize  Int?
+  imagen_width     Int?
+  imagen_height    Int?
+  imagen_extension String?
+  categoria        Categoria? @relation("Producto_categoria", fields: [categoriaId], references: [id])
+  categoriaId      String?    @map("categoria")
 
-  @@index([authorId])
+  @@index([categoriaId])
 }
 
-model Tag {
-  id    String @id @default(cuid())
-  name  String @default("")
-  posts Post[] @relation("Post_tags")
+model Categoria {
+  id        String     @id @default(cuid())
+  nombre    String     @default("")
+  productos Producto[] @relation("Producto_categoria")
+}
+
+model Portada {
+  id               String  @id @default(cuid())
+  nombre           String  @default("")
+  es_visible       Boolean @default(true)
+  imagen_id        String?
+  imagen_filesize  Int?
+  imagen_width     Int?
+  imagen_height    Int?
+  imagen_extension String?
+}
+
+model Box {
+  id               String  @id @default(cuid())
+  nombre           String  @default("")
+  size             Int?
+  es_visible       Boolean @default(true)
+  imagen_id        String?
+  imagen_filesize  Int?
+  imagen_width     Int?
+  imagen_height    Int?
+  imagen_extension String?
+  orders           Order[] @relation("Order_box")
+}
+
+model Order {
+  id               String  @id @default(cuid())
+  nombre           String  @default("")
+  email            String  @default("")
+  telefono         String  @default("")
+  referencia       String  @default("")
+  direccion        String  @default("")
+  google_maps_link String  @default("")
+  dia_entrega      String  @default("")
+  hora_entrega     String  @default("")
+  tipo_entrega     String  @default("")
+  productos        String  @default("")
+  total_orden      Int
+  status           String? @default("created")
+  box              Box?    @relation("Order_box", fields: [boxId], references: [id])
+  boxId            String? @map("box")
+
+  @@index([boxId])
+}
+
+model Stock {
+  id             String   @id @default(cuid())
+  actualizado_en DateTime @default(now())
+  valido_desde   DateTime @unique
+  valido_hasta   DateTime @unique
+  es_valido      Boolean  @default(true)
+  productos      Json?
 }
