@@ -25,7 +25,7 @@ const {
 export default withAuth(
   config({
     server: {
-      cors: { origin: ["http://localhost:8000"], credentials: true },
+      cors: { origin: "*", credentials: true },
     },
     db: {
       provider: "postgresql",
