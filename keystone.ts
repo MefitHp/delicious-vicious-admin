@@ -32,7 +32,8 @@ export default withAuth(
       url: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ep-billowing-star-a584btzx.us-east-2.aws.neon.tech/delicious-vicious-dev?sslmode=require`,
     },
     graphql: {
-      cors: { origin: ["http://localhost:8000"], credentials: true },
+      playground: true,
+      cors: { origin: "*", credentials: true },
     },
     lists,
     session,
