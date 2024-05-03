@@ -33,6 +33,7 @@ export default withAuth(
     },
     graphql: {
       playground: true,
+      apolloConfig: { introspection: true },
       cors: { origin: "*", credentials: true },
     },
     lists,
