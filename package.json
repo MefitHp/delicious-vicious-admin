@@ -6,7 +6,7 @@
     "dev": "keystone dev",
     "start": "keystone start --with-migrations",
     "build": "keystone build",
-    "postinstall": "keystone build --no-ui --frozen",
+    "postinstall": "npm install --os=linux --cpu=x64 sharp && keystone build --no-ui --frozen",
     "deploy": "keystone build && keystone prisma migrate deploy"
   },
   "dependencies": {
