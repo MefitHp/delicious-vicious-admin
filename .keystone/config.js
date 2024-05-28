@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // keystone.ts
@@ -29,6 +39,27 @@ var import_core2 = require("@keystone-6/core");
 var import_core = require("@keystone-6/core");
 var import_access = require("@keystone-6/core/access");
 var import_fields = require("@keystone-6/core/fields");
+
+// utils.ts
+var import_jimp = __toESM(require("jimp"));
+var import_sharp = __toESM(require("sharp"));
+var import_axios = __toESM(require("axios"));
+var generatePlaceholder = async (imageUrl) => {
+  try {
+    const response = await import_axios.default.get(imageUrl, { responseType: "arraybuffer" });
+    const imageBuffer = Buffer.from(response.data);
+    const convertedBuffer = await (0, import_sharp.default)(imageBuffer).toFormat("jpeg").toBuffer();
+    const image2 = await import_jimp.default.read(convertedBuffer);
+    image2.resize(10, 10);
+    const base64 = await image2.getBase64Async(import_jimp.default.MIME_JPEG);
+    return base64;
+  } catch (error) {
+    console.error("Error generating placeholder:", error);
+    throw new Error("Failed to generate image placeholder");
+  }
+};
+
+// schema.ts
 var lists = {
   User: (0, import_core.list)({
     // WARNING
@@ -71,6 +102,7 @@ var lists = {
       }),
       es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
       imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
+      imagenPlaceholder: (0, import_fields.text)({}),
       categoria: (0, import_fields.relationship)({
         ref: "Categoria.productos",
         ui: {
@@ -78,6 +110,29 @@ var lists = {
           labelField: "nombre"
         }
       })
+    },
+    hooks: {
+      afterOperation: async ({
+        operation,
+        item,
+        context,
+        resolvedData
+      }) => {
+        if ((operation === "create" || operation === "update") && resolvedData?.imagen.id) {
+          if (item.imagen_id) {
+            const imageContext = context.images("delicious_vicious_bucket");
+            const imageUrl = await imageContext.getUrl(
+              item.imagen_id,
+              item.imagen_extension
+            );
+            const placeholder = await generatePlaceholder(imageUrl);
+            await context.query.Producto.updateOne({
+              where: { id: item.id },
+              data: { imagenPlaceholder: placeholder }
+            });
+          }
+        }
+      }
     }
   }),
   Categoria: (0, import_core.list)({
@@ -105,7 +160,7 @@ var lists = {
     access: import_access.allowAll,
     fields: {
       nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
-      size: (0, import_fields.integer)(),
+      size: (0, import_fields.integer)({ validation: { isRequired: true } }),
       es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
       imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
       orders: (0, import_fields.relationship)({
@@ -241,11 +296,16 @@ var {
 var keystone_default = withAuth(
   (0, import_core2.config)({
     server: {
-      cors: { origin: ["http://localhost:8080"], credentials: true }
+      cors: { origin: "*", credentials: true }
     },
     db: {
       provider: "postgresql",
       url: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ep-billowing-star-a584btzx.us-east-2.aws.neon.tech/delicious-vicious-dev?sslmode=require`
+    },
+    graphql: {
+      playground: true,
+      apolloConfig: { introspection: true },
+      cors: { origin: "*", credentials: true }
     },
     lists,
     session,

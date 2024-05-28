@@ -20,18 +20,19 @@ model User {
 }
 
 model Producto {
-  id               String     @id @default(cuid())
-  nombre           String     @default("")
-  descripcion      String     @default("")
-  precio           Int
-  es_visible       Boolean    @default(true)
-  imagen_id        String?
-  imagen_filesize  Int?
-  imagen_width     Int?
-  imagen_height    Int?
-  imagen_extension String?
-  categoria        Categoria? @relation("Producto_categoria", fields: [categoriaId], references: [id])
-  categoriaId      String?    @map("categoria")
+  id                String     @id @default(cuid())
+  nombre            String     @default("")
+  descripcion       String     @default("")
+  precio            Int
+  es_visible        Boolean    @default(true)
+  imagen_id         String?
+  imagen_filesize   Int?
+  imagen_width      Int?
+  imagen_height     Int?
+  imagen_extension  String?
+  imagenPlaceholder String     @default("")
+  categoria         Categoria? @relation("Producto_categoria", fields: [categoriaId], references: [id])
+  categoriaId       String?    @map("categoria")
 
   @@index([categoriaId])
 }
@@ -56,7 +57,7 @@ model Portada {
 model Box {
   id               String  @id @default(cuid())
   nombre           String  @default("")
-  size             Int?
+  size             Int
   es_visible       Boolean @default(true)
   imagen_id        String?
   imagen_filesize  Int?

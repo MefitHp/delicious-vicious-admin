@@ -21,6 +21,8 @@ import {
   relationship,
   json,
 } from "@keystone-6/core/fields";
+import { generatePlaceholder } from "./utils";
+import { KeystoneContext } from "@keystone-6/core/types";
 
 // the document field is a more complicated field, so it has it's own package
 // if you want to make your own fields, see https://keystonejs.com/docs/guides/custom-fields
@@ -78,6 +80,7 @@ export const lists = {
       }),
       es_visible: checkbox({ defaultValue: true }),
       imagen: image({ storage: "delicious_vicious_bucket" }),
+      imagenPlaceholder: text({}),
       categoria: relationship({
         ref: "Categoria.productos",
         ui: {
@@ -85,6 +88,38 @@ export const lists = {
           labelField: "nombre",
         },
       }),
+    },
+    hooks: {
+      afterOperation: async ({
+        operation,
+        item,
+        context,
+        resolvedData,
+      }: {
+        operation: string;
+        item: any;
+        context: KeystoneContext;
+        resolvedData: any;
+      }) => {
+        if (
+          (operation === "create" || operation === "update") &&
+          resolvedData?.imagen.id
+        ) {
+          if (item.imagen_id) {
+            const imageContext = context.images("delicious_vicious_bucket");
+            const imageUrl = await imageContext.getUrl(
+              item.imagen_id,
+              item.imagen_extension
+            );
+
+            const placeholder = await generatePlaceholder(imageUrl);
+            await context.query.Producto.updateOne({
+              where: { id: item.id },
+              data: { imagenPlaceholder: placeholder },
+            });
+          }
+        }
+      },
     },
   }),
 
@@ -115,7 +150,7 @@ export const lists = {
     access: allowAll,
     fields: {
       nombre: text({ validation: { isRequired: true } }),
-      size: integer(),
+      size: integer({ validation: { isRequired: true } }),
       es_visible: checkbox({ defaultValue: true }),
       imagen: image({ storage: "delicious_vicious_bucket" }),
       orders: relationship({

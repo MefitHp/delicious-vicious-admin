@@ -124,6 +124,7 @@ type Producto {
   precio: Int
   es_visible: Boolean
   imagen: ImageFieldOutput
+  imagenPlaceholder: String
   categoria: Categoria
 }
 
@@ -156,6 +157,7 @@ input ProductoWhereInput {
   descripcion: StringFilter
   precio: IntFilter
   es_visible: BooleanFilter
+  imagenPlaceholder: StringFilter
   categoria: CategoriaWhereInput
 }
 
@@ -181,6 +183,7 @@ input ProductoOrderByInput {
   descripcion: OrderDirection
   precio: OrderDirection
   es_visible: OrderDirection
+  imagenPlaceholder: OrderDirection
 }
 
 input ProductoUpdateInput {
@@ -189,6 +192,7 @@ input ProductoUpdateInput {
   precio: Int
   es_visible: Boolean
   imagen: ImageFieldInput
+  imagenPlaceholder: String
   categoria: CategoriaRelateToOneForUpdateInput
 }
 
@@ -216,6 +220,7 @@ input ProductoCreateInput {
   precio: Int
   es_visible: Boolean
   imagen: ImageFieldInput
+  imagenPlaceholder: String
   categoria: CategoriaRelateToOneForCreateInput
 }
 
@@ -345,20 +350,9 @@ input BoxWhereInput {
   NOT: [BoxWhereInput!]
   id: IDFilter
   nombre: StringFilter
-  size: IntNullableFilter
+  size: IntFilter
   es_visible: BooleanFilter
   orders: OrderManyRelationFilter
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input OrderManyRelationFilter {
