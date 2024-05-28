@@ -18,5 +18,8 @@
     "jimp": "^0.22.12",
     "sharp": "^0.33.4",
     "typescript": "^4.9.5"
+  },
+  "installConfig": {
+    "ignoreEngines": true
   }
 }
