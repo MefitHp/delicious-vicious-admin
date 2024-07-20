@@ -153,6 +153,7 @@ var lists = {
     fields: {
       nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
       es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
+      es_vertical: (0, import_fields.checkbox)({ defaultValue: false }),
       imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" })
     }
   }),

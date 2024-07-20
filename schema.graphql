@@ -291,6 +291,7 @@ type Portada {
   id: ID!
   nombre: String
   es_visible: Boolean
+  es_vertical: Boolean
   imagen: ImageFieldOutput
 }
 
@@ -305,17 +306,20 @@ input PortadaWhereInput {
   id: IDFilter
   nombre: StringFilter
   es_visible: BooleanFilter
+  es_vertical: BooleanFilter
 }
 
 input PortadaOrderByInput {
   id: OrderDirection
   nombre: OrderDirection
   es_visible: OrderDirection
+  es_vertical: OrderDirection
 }
 
 input PortadaUpdateInput {
   nombre: String
   es_visible: Boolean
+  es_vertical: Boolean
   imagen: ImageFieldInput
 }
 
@@ -327,6 +331,7 @@ input PortadaUpdateArgs {
 input PortadaCreateInput {
   nombre: String
   es_visible: Boolean
+  es_vertical: Boolean
   imagen: ImageFieldInput
 }
 
