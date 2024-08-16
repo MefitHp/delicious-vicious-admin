@@ -80,7 +80,10 @@ export const lists = {
       }),
       es_visible: checkbox({ defaultValue: true }),
       imagen: image({ storage: "delicious_vicious_bucket" }),
-      imagenPlaceholder: text({}),
+      imagenPlaceholder: text({
+        label:
+          "Campo de referencia, no se tiene que llenar. (Solo Mefit lo puede modificar)",
+      }),
       categoria: relationship({
         ref: "Categoria.productos",
         ui: {
@@ -134,6 +137,7 @@ export const lists = {
           labelField: "nombre",
         },
       }),
+      se_vende_por_caja: checkbox({ defaultValue: false }),
     },
   }),
 
@@ -151,12 +155,31 @@ export const lists = {
     access: allowAll,
     fields: {
       nombre: text({ validation: { isRequired: true } }),
-      size: integer({ validation: { isRequired: true } }),
+      size: integer({
+        validation: { isRequired: true, min: 1 },
+        label:
+          "Tamaño (Coloca 1 si la caja es de un solo producto Ej: Brownies)",
+      }),
       es_visible: checkbox({ defaultValue: true }),
       imagen: image({ storage: "delicious_vicious_bucket" }),
+      categoria: relationship({
+        ref: "Categoria", // Reference to Categoria list
+        ui: {
+          displayMode: "select",
+          labelField: "nombre", // Display the 'nombre' field of Categoria
+        },
+      }),
+      descripcion: text({
+        label:
+          "Descripción: (Si es solo de un producto, recomendable agregar algo como: `Caja de 6 brownies de un solo sabor a elegir`)",
+        ui: {
+          displayMode: "textarea",
+        },
+      }),
       orders: relationship({
         ref: "Order.box", // Reference the 'box' field in the Order list
         many: true, // Box can have many orders
+        label: "Este campo es de referencia, no se tiene que llenar",
         ui: {
           displayMode: "count",
         },

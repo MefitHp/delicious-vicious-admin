@@ -102,7 +102,9 @@ var lists = {
       }),
       es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
       imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
-      imagenPlaceholder: (0, import_fields.text)({}),
+      imagenPlaceholder: (0, import_fields.text)({
+        label: "Campo de referencia, no se tiene que llenar. (Solo Mefit lo puede modificar)"
+      }),
       categoria: (0, import_fields.relationship)({
         ref: "Categoria.productos",
         ui: {
@@ -145,7 +147,8 @@ var lists = {
         ui: {
           labelField: "nombre"
         }
-      })
+      }),
+      se_vende_por_caja: (0, import_fields.checkbox)({ defaultValue: false })
     }
   }),
   Portada: (0, import_core.list)({
@@ -161,14 +164,33 @@ var lists = {
     access: import_access.allowAll,
     fields: {
       nombre: (0, import_fields.text)({ validation: { isRequired: true } }),
-      size: (0, import_fields.integer)({ validation: { isRequired: true } }),
+      size: (0, import_fields.integer)({
+        validation: { isRequired: true, min: 1 },
+        label: "Tama\xF1o (Coloca 1 si la caja es de un solo producto Ej: Brownies)"
+      }),
       es_visible: (0, import_fields.checkbox)({ defaultValue: true }),
       imagen: (0, import_fields.image)({ storage: "delicious_vicious_bucket" }),
+      categoria: (0, import_fields.relationship)({
+        ref: "Categoria",
+        // Reference to Categoria list
+        ui: {
+          displayMode: "select",
+          labelField: "nombre"
+          // Display the 'nombre' field of Categoria
+        }
+      }),
+      descripcion: (0, import_fields.text)({
+        label: "Descripci\xF3n: (Si es solo de un producto, recomendable agregar algo como: `Caja de 6 brownies de un solo sabor a elegir`)",
+        ui: {
+          displayMode: "textarea"
+        }
+      }),
       orders: (0, import_fields.relationship)({
         ref: "Order.box",
         // Reference the 'box' field in the Order list
         many: true,
         // Box can have many orders
+        label: "Este campo es de referencia, no se tiene que llenar",
         ui: {
           displayMode: "count"
         }

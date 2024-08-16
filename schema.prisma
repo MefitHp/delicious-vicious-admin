@@ -38,16 +38,18 @@ model Producto {
 }
 
 model Categoria {
-  id        String     @id @default(cuid())
-  nombre    String     @default("")
-  productos Producto[] @relation("Producto_categoria")
+  id                 String     @id @default(cuid())
+  nombre             String     @default("")
+  productos          Producto[] @relation("Producto_categoria")
+  se_vende_por_caja  Boolean    @default(false)
+  from_Box_categoria Box[]      @relation("Box_categoria")
 }
 
 model Portada {
   id               String  @id @default(cuid())
   nombre           String  @default("")
   es_visible       Boolean @default(true)
-  es_vertical      Boolean @default(true)
+  es_vertical      Boolean @default(false)
   imagen_id        String?
   imagen_filesize  Int?
   imagen_width     Int?
@@ -56,16 +58,21 @@ model Portada {
 }
 
 model Box {
-  id               String  @id @default(cuid())
-  nombre           String  @default("")
+  id               String     @id @default(cuid())
+  nombre           String     @default("")
   size             Int
-  es_visible       Boolean @default(true)
+  es_visible       Boolean    @default(true)
   imagen_id        String?
   imagen_filesize  Int?
   imagen_width     Int?
   imagen_height    Int?
   imagen_extension String?
-  orders           Order[] @relation("Order_box")
+  categoria        Categoria? @relation("Box_categoria", fields: [categoriaId], references: [id])
+  categoriaId      String?    @map("categoria")
+  descripcion      String     @default("")
+  orders           Order[]    @relation("Order_box")
+
+  @@index([categoriaId])
 }
 
 model Order {

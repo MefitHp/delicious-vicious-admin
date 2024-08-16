@@ -234,6 +234,7 @@ type Categoria {
   nombre: String
   productos(where: ProductoWhereInput! = {}, orderBy: [ProductoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductoWhereUniqueInput): [Producto!]
   productosCount(where: ProductoWhereInput! = {}): Int
+  se_vende_por_caja: Boolean
 }
 
 input CategoriaWhereUniqueInput {
@@ -247,6 +248,7 @@ input CategoriaWhereInput {
   id: IDFilter
   nombre: StringFilter
   productos: ProductoManyRelationFilter
+  se_vende_por_caja: BooleanFilter
 }
 
 input ProductoManyRelationFilter {
@@ -258,11 +260,13 @@ input ProductoManyRelationFilter {
 input CategoriaOrderByInput {
   id: OrderDirection
   nombre: OrderDirection
+  se_vende_por_caja: OrderDirection
 }
 
 input CategoriaUpdateInput {
   nombre: String
   productos: ProductoRelateToManyForUpdateInput
+  se_vende_por_caja: Boolean
 }
 
 input ProductoRelateToManyForUpdateInput {
@@ -280,6 +284,7 @@ input CategoriaUpdateArgs {
 input CategoriaCreateInput {
   nombre: String
   productos: ProductoRelateToManyForCreateInput
+  se_vende_por_caja: Boolean
 }
 
 input ProductoRelateToManyForCreateInput {
@@ -341,6 +346,8 @@ type Box {
   size: Int
   es_visible: Boolean
   imagen: ImageFieldOutput
+  categoria: Categoria
+  descripcion: String
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
 }
@@ -357,6 +364,8 @@ input BoxWhereInput {
   nombre: StringFilter
   size: IntFilter
   es_visible: BooleanFilter
+  categoria: CategoriaWhereInput
+  descripcion: StringFilter
   orders: OrderManyRelationFilter
 }
 
@@ -371,6 +380,7 @@ input BoxOrderByInput {
   nombre: OrderDirection
   size: OrderDirection
   es_visible: OrderDirection
+  descripcion: OrderDirection
 }
 
 input BoxUpdateInput {
@@ -378,6 +388,8 @@ input BoxUpdateInput {
   size: Int
   es_visible: Boolean
   imagen: ImageFieldInput
+  categoria: CategoriaRelateToOneForUpdateInput
+  descripcion: String
   orders: OrderRelateToManyForUpdateInput
 }
 
@@ -398,6 +410,8 @@ input BoxCreateInput {
   size: Int
   es_visible: Boolean
   imagen: ImageFieldInput
+  categoria: CategoriaRelateToOneForCreateInput
+  descripcion: String
   orders: OrderRelateToManyForCreateInput
 }
 
