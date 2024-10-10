@@ -146,7 +146,7 @@ export const lists = {
     fields: {
       nombre: text({ validation: { isRequired: true } }),
       es_visible: checkbox({ defaultValue: true }),
-      es_vertical: checkbox({ defaultValue: false }),
+      es_version_movil: checkbox({ defaultValue: false }),
       imagen: image({ storage: "delicious_vicious_bucket" }),
     },
   }),

@@ -296,7 +296,7 @@ type Portada {
   id: ID!
   nombre: String
   es_visible: Boolean
-  es_vertical: Boolean
+  es_version_movil: Boolean
   imagen: ImageFieldOutput
 }
 
@@ -311,20 +311,20 @@ input PortadaWhereInput {
   id: IDFilter
   nombre: StringFilter
   es_visible: BooleanFilter
-  es_vertical: BooleanFilter
+  es_version_movil: BooleanFilter
 }
 
 input PortadaOrderByInput {
   id: OrderDirection
   nombre: OrderDirection
   es_visible: OrderDirection
-  es_vertical: OrderDirection
+  es_version_movil: OrderDirection
 }
 
 input PortadaUpdateInput {
   nombre: String
   es_visible: Boolean
-  es_vertical: Boolean
+  es_version_movil: Boolean
   imagen: ImageFieldInput
 }
 
@@ -336,7 +336,7 @@ input PortadaUpdateArgs {
 input PortadaCreateInput {
   nombre: String
   es_visible: Boolean
-  es_vertical: Boolean
+  es_version_movil: Boolean
   imagen: ImageFieldInput
 }
 

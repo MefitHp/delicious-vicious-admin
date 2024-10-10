@@ -49,7 +49,7 @@ model Portada {
   id               String  @id @default(cuid())
   nombre           String  @default("")
   es_visible       Boolean @default(true)
-  es_vertical      Boolean @default(false)
+  es_version_movil Boolean @default(false)
   imagen_id        String?
   imagen_filesize  Int?
   imagen_width     Int?
